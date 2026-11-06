@@ -442,12 +442,13 @@ body.page { height: auto; min-height: 100dvh; overflow: auto; }
 .source-list a { font-weight: 500; }
 .source-list small { margin-left: auto; color: var(--faint); font-size: 12px; text-align: right; }
 .page-content small a { color: var(--faint); font-weight: 400; }
-.notices { margin-top: var(--group); color: var(--muted); font-size: 13px; line-height: 1.5; }
-.notices > summary { display: flex; align-items: center; gap: 4px; width: fit-content; cursor: pointer; list-style: none; }
+.page-content .source-note { margin-top: var(--item); color: var(--faint); font-size: 12px; line-height: 1.5; }
+.source-list small a, .source-note a { white-space: nowrap; }
+.notices { margin-top: var(--group); }
+.notices > summary { display: flex; align-items: center; gap: 4px; width: fit-content; color: var(--muted); font-size: 13px; line-height: 1.5; cursor: pointer; list-style: none; }
 .notices > summary::-webkit-details-marker { display: none; }
-.notices ul { gap: var(--item); margin: 0; padding: 0; list-style: none; --lead: var(--item); }
-.notices li > a { display: inline-flex; align-items: center; min-height: 44px; }
-.page-content .notices a { color: var(--muted); }
+.notices .source-list { margin-top: 0; border-top: 0; --lead: var(--item); }
+.notices .source-list > :first-child { border-top: 1px solid var(--line); }
 
 body.home { height: auto; min-height: 100dvh; overflow: auto; display: flex; flex-direction: column; }
 .dictionary .home-heading, .dictionary .home-examples, .dictionary .home-footer, .dictionary .submit-button { display: none; }

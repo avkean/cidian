@@ -150,15 +150,6 @@ pub(crate) const SOURCE_NAMES: [(&str, &str); 3] = [
 
 pub(crate) const NOTICE: &str = "NOTICE";
 
-const LICENCE_LABELS: [(&str, &str); 6] = [
-    ("English-words.txt", "English word lists"),
-    ("Unihan.txt", "Unihan"),
-    ("makemeahanzi-COPYING.txt", "Make Me a Hanzi terms"),
-    ("makemeahanzi-LGPL.txt", "Make Me a Hanzi (LGPL)"),
-    ("makemeahanzi-GPL.txt", "Make Me a Hanzi (GPL)"),
-    ("makemeahanzi-ARPHICPL.txt", "Make Me a Hanzi (Arphic)"),
-];
-
 fn notice_parts(line: &str) -> Vec<(&str, Option<&str>)> {
     let mut parts = Vec::new();
     let mut rest = line;
@@ -177,24 +168,44 @@ fn notice_parts(line: &str) -> Vec<(&str, Option<&str>)> {
     parts
 }
 
+// Hyphens in NOTICE text don't break lines, so "CC BY-SA" and "LGPL-3.0" stay whole.
 fn notice_html(line: &str) -> String {
     notice_parts(line)
         .into_iter()
+        .map(|(text, link)| (text.replace('-', "\u{2011}"), link))
         .map(|(text, link)| match link {
+            Some(url) if url.starts_with('/') => {
+                format!(
+                    "<a href=\"{}\">{}</a>",
+                    escape_html(url),
+                    escape_html(&text)
+                )
+            }
             Some(url) => format!(
                 "<a href=\"{}\" target=\"_blank\" rel=\"noopener\">{}</a>",
                 escape_html(url),
-                escape_html(text)
+                escape_html(&text)
             ),
-            None => escape_html(text),
+            None => escape_html(&text),
         })
         .collect()
+}
+
+// One row per source: its name, then its licence or attribution note in small text.
+fn source_row(name: &str, note: &str) -> String {
+    let note = if note.is_empty() {
+        String::new()
+    } else {
+        format!("<small>{}</small>", notice_html(note))
+    };
+    format!("<li>{}{note}</li>", notice_html(name))
 }
 
 pub(crate) fn sources_page(licenses: &BTreeMap<String, String>) -> String {
     let mut sources = String::new();
     let mut about = String::new();
     let mut notes = String::new();
+    let mut credits = String::new();
     let mut in_notes = false;
     for line in licenses.get(NOTICE).map_or("", String::as_str).lines() {
         if line == "Licence texts" {
@@ -202,38 +213,20 @@ pub(crate) fn sources_page(licenses: &BTreeMap<String, String>) -> String {
         } else if line.trim().is_empty() {
             continue;
         } else if in_notes {
-            notes += &format!("<li>{}</li>", notice_html(line));
+            let (name, note) = line.split_once(": ").unwrap_or((line, ""));
+            notes += &source_row(name, note);
         } else if let Some(source) = line.strip_prefix("- ") {
             let (name, licence) = source.split_once(" | ").unwrap_or((source, ""));
-            sources += &format!(
-                "<li>{}<small>{}</small></li>",
-                notice_html(name),
-                notice_html(licence)
-            );
-        } else {
+            sources += &source_row(name, licence);
+        } else if sources.is_empty() {
             about += &format!("<p>{}</p>", notice_html(line));
+        } else {
+            // a line after the sources is the credit and changes note
+            credits += &format!("<p class=\"source-note\">{}</p>", notice_html(line));
         }
     }
-    let texts = licenses
-        .keys()
-        .filter(|file| *file != NOTICE)
-        .map(|file| {
-            let label = LICENCE_LABELS
-                .iter()
-                .find(|(name, _)| name == file)
-                .map_or_else(
-                    || file.strip_suffix(".txt").unwrap_or(file),
-                    |(_, label)| label,
-                );
-            format!(
-                "<li><a href=\"/licenses/{}\">{}</a></li>",
-                escape_html(file),
-                escape_html(label)
-            )
-        })
-        .collect::<String>();
     format!(
-        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" content=\"light dark\"><meta name=\"description\" content=\"Data sources, attribution and licences for avkean 词典.\"><title>Sources · avkean 词典</title><link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\"><link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\"><script src=\"/theme.js\"></script><link rel=\"stylesheet\" href=\"/style.css\"></head><body class=\"page\"><main class=\"page-content\"><a class=\"page-back\" href=\"/\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"m15 5-7 7 7 7\"/></svg><span>avkean <span lang=\"zh\">词典</span></span></a><h1>Sources</h1>{about}<ul class=\"source-list\">{sources}</ul><details class=\"notices\"><summary>Licence texts<svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"m9 5 7 7-7 7\"/></svg></summary><ul class=\"disclosure-body\">{notes}{texts}</ul></details></main></body></html>"
+        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"color-scheme\" content=\"light dark\"><meta name=\"description\" content=\"Data sources, attribution and licences for avkean 词典.\"><title>Sources · avkean 词典</title><link rel=\"icon\" href=\"/favicon.ico\" sizes=\"32x32\"><link rel=\"icon\" href=\"/favicon.svg\" type=\"image/svg+xml\"><script src=\"/theme.js\"></script><link rel=\"stylesheet\" href=\"/style.css\"></head><body class=\"page\"><main class=\"page-content\"><a class=\"page-back\" href=\"/\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"m15 5-7 7 7 7\"/></svg><span>avkean <span lang=\"zh\">词典</span></span></a><h1>Sources</h1>{about}<ul class=\"source-list\">{sources}</ul>{credits}<details class=\"notices\"><summary>Licence texts<svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"m9 5 7 7-7 7\"/></svg></summary><ul class=\"source-list disclosure-body\">{notes}</ul></details></main></body></html>"
     )
 }
 
