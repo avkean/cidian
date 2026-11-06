@@ -1,0 +1,6 @@
+.git
+target
+scripts
+data/core
+.DS_Store
+.cache

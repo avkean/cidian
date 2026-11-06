@@ -1,0 +1,13 @@
+# These 11 readings use the dictionary's default pinyin grouping; a blind rating against GB/T 16159 found Wiktionary's splits worse.
+# One headword|reading per line, readings as in dictionary.jsonl.
+凯尔特语|kai3 er3 te4 yu3
+嗜中性球|shi4 zhong1 xing4 qiu2
+大麻二酚|da4 ma2 er4 fen1
+恶性循环|e4 xing4 xun2 huan2
+愿者上钩|yuan4 zhe3 shang4 gou1
+打者爱也|da3 zhe3 ai4 ye3
+暗暗自责|an4 an4 zi4 ze2
+皱皮木瓜|zhou4 pi2 mu4 gua1
+紫菜包饭|zi3 cai4 bao1 fan4
+雅利安人|ya3 li4 an1 ren2
+骏马雕鞍|jun4 ma3 diao1 an1

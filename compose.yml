@@ -1,0 +1,19 @@
+services:
+  cidian:
+    build: .
+    image: cidian
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 2
+    environment:
+      CIDIAN_HOST: 0.0.0.0
+      CIDIAN_PORT: ${CIDIAN_PORT:-3000}
+      CIDIAN_FEEDBACK_URL: ${CIDIAN_FEEDBACK_URL:-}
+    networks: [proxy_net]
+
+networks:
+  proxy_net:
+    external: true

@@ -1,0 +1,4 @@
+# Default traditional forms: 锉 → 銼 and 糸 → 糸, overriding Chinese Wikipedia frequency choices.
+# One simplified character TAB traditional default per line; shared by the build and server.
+锉	銼
+糸	糸

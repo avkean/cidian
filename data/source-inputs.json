@@ -1,0 +1,101 @@
+{
+  "corpus": {
+    "name": "Multilingual Open Text v1.11, Mandarin VOA Chinese articles",
+    "authors": "Chester Palen-Michel, June Kim and Constantine Lignos (BLT Lab, Brandeis University)",
+    "url": "https://github.com/bltlab/mot/releases/download/v1.11/cmn_voachinese.tgz",
+    "sha256": "c60b30efa873c022ea16956670b1a6f6f059ad1f9267a673cc785d6406c95f6d",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "license_evidence": "https://aclanthology.org/2022.lrec-1.224/",
+    "release": "https://github.com/bltlab/mot/releases/tag/v1.11",
+    "through": "2025-03-16",
+    "method": "Overlapping literal substrings of simplified and traditional headwords in article paragraphs only; no tokenization, titles or cross-paragraph matches; identical article bodies counted once. Zero means unobserved, not an estimated count.",
+    "articles": 281440,
+    "paragraphs": 2667272,
+    "characters": 211779870,
+    "headwords_observed": 139130,
+    "vocabulary_sha256": "71279bc01cf813777b396822b6234af1cb3b6ec6ef98f6ff3868c9c72bdf2f0b",
+    "counts_file": "data/corpus-counts.tsv",
+    "counts_sha256": "7d700cc0cce9eee5f15cd89775f7c2cf59712536bdf9b53cfaf28c47112d1960"
+  },
+  "wikipedia": {
+    "name": "Chinese Wikipedia 20261001 dump, main-namespace articles",
+    "authors": "Chinese Wikipedia contributors (Wikimedia Foundation)",
+    "url": "https://dumps.wikimedia.org/zhwiki/20261001/zhwiki-20261001-pages-articles-multistream.xml.bz2",
+    "sha1": "5732e576bd5eafece10b0efaba28e4ea66b8a26e",
+    "sha256": "49f7d0b59069d9376c87594e841b864f18ca11bfdb21feb5a32cb60ca318ac9b",
+    "dump_bytes": 3611931172,
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "license_evidence": "https://zh.wikipedia.org/wiki/Wikipedia:Copyrights",
+    "release": "https://dumps.wikimedia.org/zhwiki/20261001/",
+    "through": "2026-10-01",
+    "method": "Overlapping literal substrings of simplified and traditional headwords (multi-character via Aho-Corasick, one-character spellings counted per character) per line of cleaned article wikitext, the same counting as the MOT file; no tokenization, no cross-line matches; redirects, non-article pages, templates, tables, references and section titles skipped. A spelling shared by several headwords is credited first to headwords for which it is the headword itself or its first traditional form, otherwise to every headword listing it among its traditional forms; remaining ties are split by jieba share (dictionary frequency), integer largest-remainder. Raw integer counts, not rescaled; divide by the characters value to normalise per million characters. Zero means unobserved, not an estimated count. Only headwords absent from data/corpus-counts.tsv are kept here.",
+    "articles": 1558805,
+    "lines": 20537628,
+    "characters": 1128634779,
+    "headwords_observed": 72638,
+    "dictionary_sha256": "e9cb63eb3e3b34b5c031aa0fca0e499f040d5759075f7657a022b0a9f106af6a",
+    "vocabulary_sha256": "95a7b935e96f3d951decfbe84e465cb5121da1374cf207a6c0e9535ddfe6e68e",
+    "counts_file": "data/wiki-counts.tsv",
+    "counts_sha256": "923920038e4dfe3485d73991bdd82c9e6de7c89cd270aee57c0bd9ae07a3a223"
+  },
+  "unihan": {
+    "version": "17.0.0",
+    "url": "https://www.unicode.org/Public/17.0.0/ucd/Unihan.zip",
+    "sha256": "f7a48b2b545acfaa77b2d607ae28747404ce02baefee16396c5d2d7a8ef34b5e",
+    "license": "Unicode License V3",
+    "license_url": "https://www.unicode.org/license.txt",
+    "license_sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+    "verification": "Pinned SHA-256, ZIP CRCs and Unicode version header verified before parsing.",
+    "fields": [
+      "kHanyuPinlu",
+      "kTraditionalVariant"
+    ]
+  },
+  "characters": {
+    "revision": "bddc96d41bef78427ed0e034e9f7e31d71fd1b92",
+    "modified": "2026-10-12",
+    "files": {
+      "https://raw.githubusercontent.com/skishore/makemeahanzi/bddc96d41bef78427ed0e034e9f7e31d71fd1b92/dictionary.txt": {
+        "sha256": "744bb05d5b0742e9ee35c37791f94d56a173349b3367569e7ca11e510364d203"
+      },
+      "https://raw.githubusercontent.com/skishore/makemeahanzi/bddc96d41bef78427ed0e034e9f7e31d71fd1b92/graphics.txt": {
+        "sha256": "a28c478b5178e98f67f510b2d52fde08a69dc664654ef43498253b9b764d46ee"
+      }
+    }
+  },
+  "english_search": {
+    "files": {
+      "https://raw.githubusercontent.com/en-wl/wordlist/rel-2020.12.07/agid/infl.txt": {
+        "sha256": "df0c8f6edd4193d823abfad9e4ff6f42b4526211516649e1c73d4533aef749fa"
+      },
+      "https://raw.githubusercontent.com/en-wl/wordlist/rel-2020.12.07/agid/README": {
+        "sha256": "d7e5fee4bd2d370c231581679e9d4f4a099cef0629f44aa64e0b0b46ed8a8167"
+      },
+      "https://raw.githubusercontent.com/en-wl/wordlist/rel-2020.12.07/varcon/varcon.txt": {
+        "sha256": "340858b990255ec409adcf7faaf2b992aa2a76a16f30b4b9e2663863191dba33"
+      },
+      "https://raw.githubusercontent.com/en-wl/wordlist/rel-2020.12.07/varcon/README": {
+        "sha256": "876c66a2cbd141728aef632286689e1cd96c9df88eab26af8fda4b9924906db7"
+      },
+      "https://wordnetcode.princeton.edu/3.0/WordNet-3.0.tar.gz": {
+        "sha256": "640db279c949a88f61f851dd54ebbb22d003f8b90b85267042ef85a3781d3a52"
+      },
+      "https://raw.githubusercontent.com/hermitdave/FrequencyWords/072bbed282316a23651aa7068c7173aa7898cf80/content/2018/en/en_50k.txt": {
+        "sha256": "5351ff405b1126ef555791dd4d9798a48e3e9a501a9fc481a9da957752cfb458"
+      },
+      "https://kaikki.org/dictionary/English/kaikki.org-dictionary-English.jsonl.gz": {
+        "sha256": "cabb3a13b7179d5f8c5909e06b1dcd2e2ae6465d05f35de56509a5b4e2bf0a49"
+      },
+      "https://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz": {
+        "sha256": "5587667caa20c4891390c2d42dbb4d5c4c3f41bee77af1457ece3ba23fb859cc"
+      }
+    },
+    "outputs": {
+      "english-lexicon.tsv": "f9c9cfb9c2acdc7384dffe15305631935767560a33c11eb15ea46f19851303d3",
+      "english-usage.tsv": "ba3fddd1738f27c801d5230077282bbf35c122fb50d538e947ff1147b64dde05",
+      "english-words.txt": "3708d86e688f2cfa1eec3cf116b8ad784009c3a49b91ac4ab4c9ff8089e9697e"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "always": [
+    "NOTICE",
+    "English-words.txt",
+    "Unihan.txt"
+  ],
+  "characters": [
+    "makemeahanzi-COPYING.txt",
+    "makemeahanzi-LGPL.txt",
+    "makemeahanzi-GPL.txt",
+    "makemeahanzi-ARPHICPL.txt"
+  ]
+}

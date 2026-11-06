@@ -1,0 +1,22 @@
+Dictionary text in avkean 词典 is shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The code is MIT; other material keeps the licences listed below. All sources below were changed: selected, trimmed and reformatted.
+
+- [CC-CEDICT](https://cc-cedict.org/) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- [English Wiktionary](https://en.wiktionary.org/) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- [Tatoeba](https://tatoeba.org/) | [CC BY 2.0 FR](https://creativecommons.org/licenses/by/2.0/fr/)
+- [Make Me a Hanzi](https://github.com/skishore/makemeahanzi) | LGPL-3.0-or-later; Arphic PL
+- [Unihan](https://www.unicode.org/charts/unihan.html) | [Unicode License V3](https://www.unicode.org/license.txt)
+- [AGID, VarCon, WordNet and SCOWL](http://wordlist.aspell.net/) | Permissive
+- [FrequencyWords](https://github.com/hermitdave/FrequencyWords) | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+- [Complete HSK Vocabulary](https://github.com/drkameleon/complete-hsk-vocabulary) | MIT
+- [jieba](https://github.com/fxsjy/jieba) | MIT
+- [Multilingual Open Text](https://github.com/bltlab/mot) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- [Chinese Wikipedia](https://zh.wikipedia.org/) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- Core word list, our own | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+
+Licence texts
+
+CC-CEDICT: MDBG and contributors; CEDICT © 1997, 1998 Paul Andrew Denisowski.
+English Wiktionary: Each entry links to its Wiktionary pages.
+Tatoeba: Each example names its authors.
+Make Me a Hanzi: Character data and strokes, joined and trimmed, 12 Oct 2026.
+FrequencyWords: Word counts by Hermit Dave. Our version is CC BY-SA 4.0, as CC BY-SA 3.0 section 4(b) allows.

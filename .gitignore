@@ -1,0 +1,7 @@
+/target/
+/.cache/
+.DS_Store
+__pycache__/
+/data/dictionary.jsonl
+/data/english-support.tsv
+/data/dictionary-source.json
