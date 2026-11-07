@@ -254,6 +254,7 @@ details[open]:not(.closing) > summary > svg { transform: rotate(90deg); }
 .example-english { color: var(--muted); font-size: 15px; line-height: 1.55; }
 .source-credit { margin: 4px 0 0; color: var(--faint); font-size: 12px; line-height: 1.5; }
 .source-credit a { color: inherit; text-decoration: underline 1px var(--line-strong); text-underline-offset: 2px; }
+.wiktionary-credit { margin-top: var(--item); }
 .example-chinese b { font-weight: 600; }
 .example-pinyin b { color: var(--ink); font-weight: 400; }
 .more-examples summary { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-ink); font-size: 13px; line-height: 1.5; cursor: pointer; list-style: none; }

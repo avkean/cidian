@@ -251,10 +251,16 @@ function initializeEntry({go, updateTitle}) {
   }
 
   // CC BY-SA requires source links; those pages list the authors.
+  // One page is a plain "Wiktionary" link; several are named so they can be told apart.
   function wiktionaryCreditHTML(entry) {
-    if (!entry.wiktionary_pages?.length) return '';
-    const links = entry.wiktionary_pages.map(page => `<a href="https://en.wiktionary.org/wiki/${encodeURIComponent(page.replaceAll(' ', '_'))}" target="_blank" rel="noopener" lang="zh">${escapeHTML(page)}</a>`);
-    return `<p class="source-credit">Wiktionary: ${links.join(', ')}</p>`;
+    const pages = entry.wiktionary_pages || [];
+    if (!pages.length) return '';
+    const url = page => `https://en.wiktionary.org/wiki/${encodeURIComponent(page.replaceAll(' ', '_'))}`;
+    if (pages.length === 1) {
+      return `<p class="source-credit wiktionary-credit"><a href="${url(pages[0])}" target="_blank" rel="noopener" aria-label="Wiktionary page for ${escapeHTML(pages[0])}">Wiktionary</a></p>`;
+    }
+    const links = pages.map(page => `<a href="${url(page)}" target="_blank" rel="noopener" lang="zh">${escapeHTML(page)}</a>`);
+    return `<p class="source-credit wiktionary-credit">Wiktionary: ${links.join(', ')}</p>`;
   }
 
   function tatoebaCreditHTML(example) {

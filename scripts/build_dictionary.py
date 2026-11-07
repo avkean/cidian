@@ -321,6 +321,24 @@ def example_terms(examples):
     return [dict(example, english=one_term(example["english"])) if example.get("english") else example for example in examples]
 
 
+def drop_case_repeats(senses, examples):
+    """A meaning repeated with only different capitals ("macaranga", "Macaranga") is shown once, but only
+    when its part of speech, labels and note match too, so nothing shown is lost.
+    Examples of a dropped meaning move to the one kept."""
+    kept, seen, moved = [], {}, {}
+    for sense in senses:
+        key = (sense["text"].lower(), sense.get("pos"), tuple(sense.get("tags") or ()), sense.get("note"))
+        first = seen.get(key)
+        if first is None or (sense.get("id") and not first.get("id")):
+            seen.setdefault(key, sense)
+            kept.append(sense)
+        else:
+            if sense.get("id"):
+                moved[sense["id"]] = first["id"]
+    return kept, [dict(example, sense_id=moved[example["sense_id"]]) if example.get("sense_id") in moved else example
+                  for example in examples]
+
+
 def final_senses(word):
     primary_source = next((source for source in ("CC", "WIKT") if word["senses"][source]), None)
     if not primary_source:
@@ -543,6 +561,9 @@ def build_outputs(args, output_dir):
             senses = [{field: one_term(value) if field in ("pos", "text", "note") else value
                        for field, value in sense.items()} for sense in senses]
             examples = example_terms(examples)
+            shown = len(senses)
+            senses, examples = drop_case_repeats(senses, examples)
+            counts["case_repeats_dropped"] += shown - len(senses)
             record = {
                 "simplified": word["simplified"],
                 "traditional": word["traditional"],
