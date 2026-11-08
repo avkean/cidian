@@ -78,7 +78,10 @@ impl EnglishPart {
         }
     }
 
-    pub(super) fn prepare(word: &Word) -> Vec<Self> {
+    pub(super) fn prepare(
+        word: &Word,
+        replaced: &std::collections::HashMap<(u32, usize), Box<str>>,
+    ) -> Vec<Self> {
         let mut parts = Vec::new();
         // Pointers take no ranking positions; leads keep the original sense index.
         let senses: Vec<_> = word.searchable_senses().collect();
@@ -96,7 +99,15 @@ impl EnglishPart {
             };
             let restricted = sense.usage.restricted;
             let pos = sense.pos.as_deref();
-            for (part_position, text) in glosses(&sense.text).enumerate() {
+            // a rewritten meaning's old wording ranks as it did, and leads to the same (new) shown text
+            // positions count within each wording, so the old one ranks exactly as it did before
+            let wordings = glosses(&sense.text).enumerate().chain(
+                replaced
+                    .get(&(word.id, at))
+                    .into_iter()
+                    .flat_map(|old| glosses(old).enumerate()),
+            );
+            for (part_position, text) in wordings {
                 let start = parts.len();
                 let (raw, plain, possessive) = prepare_gloss(text);
                 let capitals = capitals(text);

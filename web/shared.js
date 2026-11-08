@@ -62,8 +62,13 @@ async function acceptRevision(value, signal) {
   return true;
 }
 
+// every request in flight, so a page about to load fresh can drop them first
+const inflight = new Set();
+const abortAll = () => { for (const controller of inflight) controller.abort(); };
+
 async function fetchJSON(url, {retry = true, ...options} = {}) {
   const controller = new AbortController();
+  inflight.add(controller);
   const caller = options.signal;
   const cancel = () => controller.abort();
   if (caller?.aborted) cancel();
@@ -116,6 +121,7 @@ async function fetchJSON(url, {retry = true, ...options} = {}) {
   } finally {
     clearTimeout(timer);
     caller?.removeEventListener('abort', cancel);
+    inflight.delete(controller);
   }
 }
 
@@ -456,5 +462,5 @@ export {
   SHEET_CLOSE_DISTANCE, entryState, listStateHTML, shown, query, searchMode, SEARCH_PAGE_SIZE,
   searches, instantAnswer, revision, PREFETCH_REQUEST_LIMIT, retryBusy, isHome, writeStored,
   openDisclosures, holdTransitions, applyTheme, TABS, stateHTML, SEARCH_MODES,
-  mobileQuery, syncMobilePanes, loadInstant,
+  mobileQuery, syncMobilePanes, loadInstant, abortAll,
 };

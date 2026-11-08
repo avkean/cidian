@@ -19,6 +19,7 @@ impl SearchIndex {
     pub fn load(path: impl AsRef<Path>) -> io::Result<Self> {
         let path = path.as_ref();
         let mut words = Vec::new();
+        let mut replaced = HashMap::new();
         let mut spans = Vec::new();
         let mut reader = BufReader::new(File::open(path)?);
         let (mut row, mut offset) = (String::new(), 0);
@@ -54,6 +55,24 @@ impl SearchIndex {
                     ),
                 ));
             }
+            if row.contains("\"replaced\"") {
+                #[derive(serde::Deserialize)]
+                struct Old {
+                    senses: Vec<OldSense>,
+                }
+                #[derive(serde::Deserialize)]
+                struct OldSense {
+                    replaced: Option<String>,
+                }
+                let old: Old = serde_json::from_str(&row).map_err(|error| {
+                    io::Error::new(io::ErrorKind::InvalidData, error.to_string())
+                })?;
+                for (at, sense) in old.senses.into_iter().enumerate() {
+                    if let Some(text) = sense.replaced {
+                        replaced.insert((words.len() as u32, at), text.into_boxed_str());
+                    }
+                }
+            }
             // dropped line by line, so the next line reuses their memory
             spans.push((
                 start,
@@ -72,7 +91,7 @@ impl SearchIndex {
                 "Dictionary must contain between 1 and 4,294,967,295 words",
             ));
         }
-        let mut index = Self::build(words);
+        let mut index = Self::build(words, replaced);
         let support_path = path.with_file_name("english-support.tsv");
         index.support = tail::SupportIndex::read(
             BufReader::new(File::open(&support_path).map_err(|e| {
@@ -131,7 +150,7 @@ impl SearchIndex {
         }
     }
 
-    fn build(mut words: Vec<Word>) -> Self {
+    fn build(mut words: Vec<Word>, replaced: HashMap<(u32, usize), Box<str>>) -> Self {
         lexicon::lexicon();
         let mut index = Self {
             words: Vec::new(),
@@ -156,6 +175,7 @@ impl SearchIndex {
             fulltext: OnceLock::new(),
             lines: None,
             examples_failed: std::sync::atomic::AtomicBool::new(false),
+            replaced,
         };
         let mut english: HashMap<String, Vec<u32>> = HashMap::new();
         let mut joined_only: HashMap<String, Vec<u32>> = HashMap::new();
@@ -221,17 +241,21 @@ impl SearchIndex {
             }
             let folded: Vec<String> = word
                 .searchable_senses()
-                .map(|(_, sense)| sense)
-                .map(|sense| sense.text.as_str())
+                .flat_map(|(at, sense)| {
+                    std::iter::once(sense.text.as_str())
+                        .chain(index.replaced.get(&(id, at)).map(|old| &**old))
+                })
                 .chain(word.search_glosses.iter().map(String::as_str))
                 .map(fold_english)
                 .collect();
             let name = english::name_entry(word);
             let joined_folded: Vec<String> = word
                 .searchable_senses()
-                .map(|(_, sense)| sense)
-                .filter(|sense| !sense.usage.proper)
-                .map(|sense| sense.text.as_str())
+                .filter(|(_, sense)| !sense.usage.proper)
+                .flat_map(|(at, sense)| {
+                    std::iter::once(sense.text.as_str())
+                        .chain(index.replaced.get(&(id, at)).map(|old| &**old))
+                })
                 .chain(
                     word.search_glosses
                         .iter()

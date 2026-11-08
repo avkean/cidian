@@ -49,6 +49,9 @@ pub struct SearchIndex {
     fulltext: OnceLock<FullText>,
     lines: Option<(File, Vec<(u64, u32)>)>,
     examples_failed: std::sync::atomic::AtomicBool,
+    /// a rewritten meaning's old text by word and sense: it still finds and ranks the meaning but is
+    /// never shown, and few meanings have one, so it's kept apart from the senses
+    replaced: HashMap<(u32, usize), Box<str>>,
 }
 
 #[derive(Default)]

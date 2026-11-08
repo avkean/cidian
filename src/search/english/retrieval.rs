@@ -324,7 +324,8 @@ impl SearchIndex {
     ) -> T {
         let cached = self.meanings.lock().unwrap().parts.get(&id).cloned();
         let parts = cached.unwrap_or_else(|| {
-            let parts: Arc<[EnglishPart]> = EnglishPart::prepare(&self.words[id as usize]).into();
+            let parts: Arc<[EnglishPart]> =
+                EnglishPart::prepare(&self.words[id as usize], &self.replaced).into();
             if keep {
                 self.meanings.lock().unwrap().insert(id, parts.clone());
             }

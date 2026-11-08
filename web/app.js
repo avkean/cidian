@@ -3,13 +3,16 @@ import {
   query, isHome, $, reducedMotion, motion, state, searchMode, openDisclosures, mobileView,
   setDetailOpen, entryState, revision, current, begin, content, entries, TABS, abortPending,
   beginLoading, $$, retryBusy, stateHTML, escapeHTML, retryFocus, toast, preferences, popup,
-  SEARCH_MODES, mobileQuery, syncMobilePanes, loadInstant,
+  SEARCH_MODES, mobileQuery, syncMobilePanes, loadInstant, abortAll,
 } from "/shared.js";
 import {initializeEntry} from "/entry.js";
 import {initializeSearch} from "/search.js";
 import {initializeSettings, renderSettings} from "/settings.js";
 import {initializeSuggestions, hideSuggest} from "/suggestions.js";
 import {headword, readingText} from "/text.js";
+
+// the build this page's code came from
+const pageRevision = revision.current;
 
 function initializeDictionary() {
   const handwriting = initializeHandwriting(character => {
@@ -94,9 +97,20 @@ function initializeDictionary() {
     const view = intent === 'replace' && entry !== undefined && !href
       ? {...currentView, scroll: listScroll, tab: undefined, pane: undefined, disclosures: undefined}
       : {...currentView, ...viewState()};
+    // After a confirmed new build this page's code is old: load the next step fresh, but not mid-typing
+    const fresh = url.href !== currentURL && revision.current !== pageRevision && document.activeElement !== query;
+    if (fresh && intent !== 'push') {
+      abortAll();
+      return location.replace(url);
+    }
     if (intent === 'push' && url.href !== currentURL) {
       cancelHistory();
       history.replaceState(view, '', currentURL);
+      // the step being left keeps its scroll and panels for Back
+      if (fresh) {
+        abortAll();
+        return location.assign(url);
+      }
       // Results can go back because the preceding step is this query's list.
       history.pushState({fromList: open && here.has('q') && here.get('view') !== 'entry'}, '', url);
       historyWritten = performance.now();

@@ -24,6 +24,7 @@ from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from definition_rules import QUALIFIED_MAIN
 from usual_words import check_dropped, load_marks
 from english_support import SupportBuilder, english_translations
 import stage_cache
@@ -217,7 +218,13 @@ def name_written(syllables, suffix, split, written=""):
 def shown_problems(record):
     texts = [sense.get(field) or "" for sense in record["senses"] for field in ("text", "note")]
     texts += [example.get(field) or "" for example in record.get("examples", []) for field in ("chinese", "english")]
-    problems = {"link": any(re.search(r"\]\(|https?://|www\.", text) for text in texts)}
+    problems = {"link": any(re.search(r"\]\(|https?://|www\.", text) for text in texts),
+                # docs/definitions.md rule 4: the everyday word comes first, never inside "especially …"
+                "meaning in a qualifier": any(sense.get("source") == "CORE" and QUALIFIED_MAIN.search(sense["text"])
+                                              for sense in record["senses"]),
+                # notes go in round brackets and register words in labels, as everywhere else
+                "square brackets in a meaning": any(sense.get("source") == "CORE" and "[" in sense["text"]
+                                                    for sense in record["senses"])}
     for example in record.get("examples", []):
         # only core pinyin is syllable by syllable; latin letters and digits read unpredictably
         if example["source"] == "CORE" and example.get("pinyin") and not re.search(r"[A-Za-z0-9]", example["chinese"]):

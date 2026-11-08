@@ -1,7 +1,7 @@
 # avkean 词典
 
 ## What it is
-- A fast, quiet Chinese–English dictionary for everyday lookups.
+- A fast, quiet Chinese–English dictionary for everyday lookups, live at https://cidian.avkean.com.
 - Common searches are answered in the browser, without a server call.
 - The server doesn't log searches or IP addresses.
 

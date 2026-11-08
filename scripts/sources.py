@@ -640,6 +640,13 @@ def read_core_entries(folder):
 
 def load_core(folder, starters, traditional):
     entries = read_core_entries(folder)
+    # docs/definitions.md: checked on every curated entry, published or not
+    from definition_rules import QUALIFIED_MAIN, repeated_label
+    broken = [entry["key"] for entry in entries.values() for sense in entry["senses"]
+              if QUALIFIED_MAIN.search(sense["text"]) or "[" in sense["text"] or repeated_label(sense)]
+    if broken:
+        raise ValueError("curated meanings with the main word in a qualifier, square brackets or a label repeated in the text: "
+                         + ", ".join(broken[:10]))
     core = {}
     for entry in entries.values():
         simplified, pinyin = entry["key"].split("|")
@@ -654,6 +661,9 @@ def load_core(folder, starters, traditional):
             item["text"] = plain_gloss(sense["text"], starters, sense.get("pos") == "proper noun")
             if sense.get("note"):
                 item["note"] = sense["note"]
+            if sense.get("replaced"):
+                # the text before a rewrite: search still finds the meaning by it; never shown
+                item["replaced"] = plain_gloss(sense["replaced"], starters, sense.get("pos") == "proper noun")
             senses.append(dict(item, id=sense["id"], source="CORE"))
         examples = [
             dict({"chinese": full_width(ex["chinese"])}, **({"pinyin": ex["pinyin"]} if ex.get("pinyin") else {}),
